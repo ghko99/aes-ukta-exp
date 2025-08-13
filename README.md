@@ -6,8 +6,8 @@
 
 - **KoBERT 기반 임베딩**: 한국어 에세이의 의미적 표현 학습
 - **다층 GRU 아키텍처**: 4가지 모델 변형으로 성능 비교
-- **UKT-A 피처 통합**: 294개의 언어학적 특징을 활용한 하이브리드 모델
-- **어텐션 메커니즘**: UKT-A 피처에 대한 가중치 학습
+- **UKTA 피처 통합**: 294개의 언어학적 특징을 활용한 하이브리드 모델
+- **어텐션 메커니즘**: UKTA 피처에 대한 가중치 학습
 - **11개 루브릭 평가**: 문법, 어휘, 구성, 내용 등 포괄적 채점
 
 ## 📊 실험 결과
@@ -19,8 +19,8 @@
 | Baseline | ❌ | **0.5284** | 기본 GRU 모델 |
 | Baseline | ✅ | **0.5499** | 프롬프트 라벨링 추가 |
 | GRU + LayerNorm | ✅ | **0.5984** | 정규화 및 평균 풀링 |
-| GRU + LayerNorm + UKT-A | ✅ | **0.6288** | 🏆 **최고 성능** |
-| GRU + LayerNorm + UKT-A + Attention | ✅ | **0.6242** | 어텐션 메커니즘 |
+| GRU + LayerNorm + UKTA | ✅ | **0.6288** | 🏆 **최고 성능** |
+| GRU + LayerNorm + UKTA + Attention | ✅ | **0.6242** | 어텐션 메커니즘 |
 
 ### 평가자 간 일치도 (Inter-Rater Reliability)
 
@@ -39,7 +39,7 @@
 | **전체 평균** | **0.6619** | **0.6465** | **0.6066** | **0.6383** |
 
 ### 모델-평가자 일치도 (Model-Rater Agreement)
-*GRU+LayerNorm+UKT-A+Attention 모델 기준*
+*GRU+LayerNorm+UKTA+Attention 모델 기준*
 
 | 루브릭 | Model-Rater A | Model-Rater B | Model-Rater C | 평균 | 인간 평가자 평균 |
 |--------|---------------|---------------|---------------|------|-----------------|
@@ -94,7 +94,7 @@
 ```
 KoBERT Embedding (768dim) → Bidirectional GRU → Feature Fusion → Scoring
                                     ↓
-                            UKT-A Features (294dim) → Linear → Concat
+                            UKTA Features (294dim) → Linear → Concat
 ```
 
 ### 3. 4가지 모델 변형
@@ -102,20 +102,20 @@ KoBERT Embedding (768dim) → Bidirectional GRU → Feature Fusion → Scoring
 #### Baseline
 - 기본 단방향 GRU
 - 마지막 히든 스테이트 사용
-- UKT-A 피처 미사용
+- UKTA 피처 미사용
 
 #### GRU with LayerNorm
 - 2층 양방향 GRU
 - LayerNorm 정규화
 - 평균 풀링 적용
 
-#### GRU with LayerNorm + UKT-A
-- UKT-A 언어학적 피처 통합
+#### GRU with LayerNorm + UKTA
+- UKTA 언어학적 피처 통합
 - 피처 차원 축소 후 결합
 - **최고 성능 달성**
 
-#### GRU with LayerNorm + UKT-A + Attention
-- UKT-A 피처에 어텐션 메커니즘 적용
+#### GRU with LayerNorm + UKTA + Attention
+- UKTA 피처에 어텐션 메커니즘 적용
 - 동적 피처 가중치 학습
 
 ## 📁 파일 구조
@@ -169,7 +169,7 @@ python performance.py
 - 문장별 768차원 벡터 생성
 - 프롬프트 라벨링으로 맥락 정보 강화
 
-### UKT-A 피처 (294개)
+### UKTA 피처 (294개)
 - **어휘 다양성**: TTR, RTTR, CTTR, MSTTR 등
 - **품사별 분포**: 명사, 동사, 형용사 등 세부 분석
 - **텍스트 응집성**: 인접 문장 간 어휘 중복도
@@ -177,7 +177,7 @@ python performance.py
 
 ### 어텐션 메커니즘
 ```python
-# UKT-A 피처에 대한 동적 가중치 계산
+# UKTA 피처에 대한 동적 가중치 계산
 attention_scores = self.attention_weights(gru_output)
 attention_weights = F.softmax(attention_scores, dim=-1)
 weighted_features = ukta_features * attention_weights
@@ -187,7 +187,7 @@ weighted_features = ukta_features * attention_weights
 
 1. **프롬프트 라벨링**: 기본 모델 대비 +0.0215 QWK 향상
 2. **LayerNorm + 평균 풀링**: 안정적인 학습과 일반화 성능 개선
-3. **UKT-A 피처 통합**: 언어학적 특징으로 +0.0304 QWK 향상
+3. **UKTA 피처 통합**: 언어학적 특징으로 +0.0304 QWK 향상
 4. **구조적 루브릭 우수성**: 문장/단락 구성 평가에서 0.9+ QWK 달성
 
 ## ⚙️ 하이퍼파라미터
@@ -212,7 +212,7 @@ max_length = 400  # 토큰 최대 길이
 ## 📝 주요 발견사항
 
 ### 1. 모델 성능 분석
-- **UKT-A 피처의 효과성**: 언어학적 특징이 딥러닝 모델 성능을 크게 향상 (+0.0304 QWK)
+- **UKTA 피처의 효과성**: 언어학적 특징이 딥러닝 모델 성능을 크게 향상 (+0.0304 QWK)
 - **어텐션의 한계**: 복잡한 어텐션보다 단순한 피처 결합이 더 효과적
 - **프롬프트 라벨링 효과**: 주제 정보 추가로 일관된 성능 향상 (+0.0215 QWK)
 
