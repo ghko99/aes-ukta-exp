@@ -193,12 +193,12 @@ weighted_features = ukta_features * attention_weights
 ## ⚙️ 하이퍼파라미터
 
 ```python
-dropout = 0.305
-learning_rate = 9.15e-4
+dropout = 0.15744792172911562
+learning_rate = 0.001070028538941047
 epochs = 100
 hidden_dim = 128
-batch_size = 128
-patience = 10  # Early stopping
+batch_size = 32 
+patience = 9  # Early stopping
 max_length = 400  # 토큰 최대 길이
 ```
 
