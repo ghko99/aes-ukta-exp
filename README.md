@@ -89,13 +89,40 @@ AI-HUB 에세이 글 평가 데이터셋으로 구축한 한국어 에세이 자
 ### 1. 데이터 전처리
 ```
 원본 에세이 → 문장 분리 → (선택적) 주제 라벨 추가 → KoBERT 토크나이징
+            ↓
+      UKTA 특성 추출 (294dim)
 ```
-
 ### 2. 모델 구조
 ```
-KoBERT Embedding (768dim) → Bidirectional GRU → Feature Fusion → Scoring
-                                    ↓
-                            UKTA Features (294dim) → Linear → Concat
+KoBERT 문장별 임베딩 (768dim)    UKTA Features (294dim)
+           ↓                           ↓
+    Bidirectional GRU                  │
+    (2 layers, dropout)                │
+           ↓                           │
+    Mean Pooling → [B, 2H]             │
+           ↓                           │
+      Layer Norm                       │
+           ↓                           │
+    Attention Weights ────────────────→│
+    Linear(2H → 294)                   │
+           ↓                           │
+      Softmax                          │
+           ↓                           │
+    Weighted UKTA ←────────────────────┘
+    (element-wise multiply)
+           ↓
+    Linear(294 → H)
+           ↓
+         Concat
+    [GRU output(2H) + UKTA features(H)] → [B, 3H]
+           ↓
+        Dropout
+           ↓
+    Linear(3H → output_dim)
+           ↓
+        Sigmoid
+           ↓
+       Final Score
 ```
 
 ### 3. 4가지 모델 변형
