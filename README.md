@@ -1,6 +1,5 @@
 # Korean Essay Auto-Scoring System with KoBERT and GRU
-
-한국어 에세이 자동 채점 시스템으로, KoBERT 임베딩과 다양한 GRU 아키텍처를 활용하여 에세이를 11개 루브릭 기준으로 평가합니다.
+AI-HUB 에세이 글 평가 데이터셋으로 구축한 한국어 에세이 자동 채점 모델로, KoBERT 임베딩과 다양한 GRU 아키텍처를 활용하여 에세이를 11개 루브릭 기준으로 평가합니다.
 
 ## 🔥 주요 특징
 
