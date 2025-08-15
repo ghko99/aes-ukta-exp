@@ -102,7 +102,7 @@ KoBERT 문장별 임베딩 (768dim)               UKTA Features (294dim)
     Mean Pooling → [B, 2H]                         │
            ↓                                       │
       Layer Norm                                   │
-           ↓                                       │
+           │                                       │
            ├─────────────────────────┐             │
            │                         ↓             │
            │                 Linear(2H → 294)      │
