@@ -94,35 +94,38 @@ AI-HUB 에세이 글 평가 데이터셋으로 구축한 한국어 에세이 자
 ```
 ### 2. 모델 구조
 ```
-KoBERT 문장별 임베딩 (768dim)    UKTA Features (294dim)
-           ↓                           ↓
-    Bidirectional GRU                  │
-    (2 layers, dropout)                │
-           ↓                           │
-    Mean Pooling → [B, 2H]             │
-           ↓                           │
-      Layer Norm                       │
-           ↓                           │
-    Attention Weights ────────────────→│
-    Linear(2H → 294)                   │
-           ↓                           │
-      Softmax                          │
-           ↓                           │
-    Weighted UKTA ←────────────────────┘
-    (element-wise multiply)
-           ↓
-    Linear(294 → H)
-           ↓
-         Concat
-    [GRU output(2H) + UKTA features(H)] → [B, 3H]
-           ↓
-        Dropout
-           ↓
-    Linear(3H → output_dim)
-           ↓
-        Sigmoid
-           ↓
-       Final Score
+KoBERT 문장별 임베딩 (768dim)               UKTA Features (294dim)
+           ↓                                       ↓
+    Bidirectional GRU                              │
+    (2 layers, dropout)                            │
+           ↓                                       │
+    Mean Pooling → [B, 2H]                         │
+           ↓                                       │
+      Layer Norm                                   │
+           ↓                                       │
+           ├─────────────────────────┐             │
+           │                         ↓             │
+           │                 Linear(2H → 294)      │
+           │                         ↓             │
+           │                     Softmax           │
+           │                         ↓             │
+           │                 Attention Weights ←───┘ (element-wise multiply)
+           │                         ↓
+           │                Weighted UKTA Features
+           │                         ↓
+           │                 Linear(294 → H)
+           │                         ↓
+           └───────→ Concat ←────────┘
+                        ↓
+       [GRU output(2H) + Weighted UKTA features(H)] → [B, 3H]
+                        ↓
+                     Dropout
+                        ↓
+              Linear(3H → output_dim)
+                        ↓
+                     Sigmoid
+                        ↓
+                   Final Score
 ```
 
 ### 3. 4가지 모델 변형
