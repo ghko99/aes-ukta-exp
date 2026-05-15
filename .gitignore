@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Data and generated artifacts
+dataset/
+emb/
+results/
+model/
+*.pth
+*.pt
+*.npy
+*.csv
+
+# Experiment logs
+wandb/
+*.log
+
+# OS metadata
+.DS_Store
